@@ -11,6 +11,9 @@ on:
 permissions:
   contents: read
 
+env:
+  HF_MODEL: sparrow-co-ltd/qwen35-9b-secfix-grpo-step180
+
 # No top-level concurrency: a shared group would let a PR `test` run displace a queued publish.
 
 jobs:
@@ -31,6 +34,8 @@ jobs:
         run: python3 scripts/collect_metrics.py
         env:
           GITHUB_TOKEN: ${{ github.token }}
+      - if: github.event_name == 'pull_request'
+        run: python3 scripts/collect_metrics.py --hf "$HF_MODEL"
 
   publish:
     needs: test
@@ -49,5 +54,24 @@ jobs:
         with:
           persist-credentials: false
       - run: python3 scripts/collect_metrics.py --publish metrics
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  # Separate job: a failed HF fetch can be re-run without appending a second GitHub row.
+  publish-hf:
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write  # only to append metrics/hf-kpi.csv on the `metrics` branch
+    concurrency:
+      group: metrics-publish
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: python3 scripts/collect_metrics.py --hf "$HF_MODEL" --publish metrics
         env:
           GITHUB_TOKEN: ${{ github.token }}

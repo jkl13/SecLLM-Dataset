@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Collect weekly GitHub KPIs for SecLLM-Dataset (Python 3.9+, standard library only).
+"""Collect weekly GitHub and Hugging Face KPIs for SecLLM-Dataset (Python 3.9+, standard library only).
 
 Usage:
   python scripts/collect_metrics.py                  print one KPI row (dry run)
   python scripts/collect_metrics.py --out FILE       append the row to a local CSV
   python scripts/collect_metrics.py --publish BRANCH append the row to metrics/github-kpi.csv on BRANCH
+  python scripts/collect_metrics.py --hf MODEL_ID    collect the Hugging Face model row instead
+                                                     (metrics/hf-kpi.csv; works with --out and --publish)
   python scripts/collect_metrics.py --self-test      check the calculations offline
 
 The token is read from GITHUB_TOKEN (optional for a dry run, required for --publish).
@@ -31,6 +33,9 @@ CSV_PATH = "metrics/github-kpi.csv"
 COLUMNS = ["date", "window_days", "stars", "forks", "watchers", "open_issues", "issues_opened",
            "issues_closed", "prs_opened", "prs_merged", "median_first_human_response_hours",
            "first_time_contributors", "repeat_contributors"]
+HF_API = "https://huggingface.co/api/models"
+HF_CSV_PATH = "metrics/hf-kpi.csv"
+HF_COLUMNS = ["date", "model", "revision", "downloads_30d", "likes"]
 
 
 def ts(s):
@@ -134,25 +139,40 @@ def collect(repo_name, days, token, now):
     return build_row(repo, items, responses, now, days)
 
 
-def csv_text(row, header):
+def hf_row(model, now):
+    """One Hugging Face row from GET https://huggingface.co/api/models/{id}.
+
+    The Hub's `downloads` is a rolling 30-day count, not a lifetime total, so rows are not summed.
+    """
+    return {"date": now.date().isoformat(), "model": model["id"], "revision": model.get("sha", ""),
+            "downloads_30d": model.get("downloads", 0), "likes": model.get("likes", 0)}
+
+
+def collect_hf(model_id, now):
+    # Public endpoint, no token: the GitHub token is never sent to another host.
+    model, _ = request(f"{HF_API}/{model_id}", None)
+    return hf_row(model, now)
+
+
+def csv_text(row, header, columns=COLUMNS):
     buf = io.StringIO()
     w = csv.writer(buf, lineterminator="\n")
     if header:
-        w.writerow(COLUMNS)
-    w.writerow([row[c] for c in COLUMNS])
+        w.writerow(columns)
+    w.writerow([row[c] for c in columns])
     return buf.getvalue()
 
 
-def append_file(path, row):
+def append_file(path, row, columns=COLUMNS):
     path = Path(path)
     header = not path.exists() or path.stat().st_size == 0
     with open(path, "a", encoding="utf-8", newline="") as f:
-        f.write(csv_text(row, header))
+        f.write(csv_text(row, header, columns))
 
 
-def publish(repo_name, branch, row, token):
-    """Append the row to CSV_PATH on BRANCH via the Contents API (fails on any conflict)."""
-    url = f"{API}/repos/{repo_name}/contents/{CSV_PATH}"
+def publish(repo_name, branch, row, token, csv_path=CSV_PATH, columns=COLUMNS):
+    """Append the row to csv_path on BRANCH via the Contents API (fails on any conflict)."""
+    url = f"{API}/repos/{repo_name}/contents/{csv_path}"
     try:
         cur, _ = request(f"{url}?ref={branch}", token)
         old, sha = base64.b64decode(cur["content"]).decode("utf-8"), cur["sha"]
@@ -160,7 +180,7 @@ def publish(repo_name, branch, row, token):
         if e.code != 404:
             raise
         old, sha = "", None
-    new = old + ("" if not old or old.endswith("\n") else "\n") + csv_text(row, header=not old)
+    new = old + ("" if not old or old.endswith("\n") else "\n") + csv_text(row, not old, columns)
     body = {"message": f"metrics: KPI row {row['date']}", "branch": branch,
             "content": base64.b64encode(new.encode("utf-8")).decode("ascii")}
     if sha:
@@ -219,11 +239,20 @@ def self_test():
         lines = path.read_text(encoding="utf-8").splitlines()
         if len(lines) != 3 or lines.count(",".join(COLUMNS)) != 1:
             failures.append(f"header must be written once: {lines}")
+    hf = hf_row({"id": "org/m", "sha": "abc", "downloads": 17, "likes": 1}, now)
+    if csv_text(hf, True, HF_COLUMNS) != "date,model,revision,downloads_30d,likes\n2026-09-28,org/m,abc,17,1\n":
+        failures.append(f"HF row: {hf}")
+    with tempfile.TemporaryDirectory() as d:
+        path = Path(d) / "hf.csv"
+        append_file(path, hf, HF_COLUMNS)
+        append_file(path, hf, HF_COLUMNS)
+        if path.read_text(encoding="utf-8").splitlines().count(",".join(HF_COLUMNS)) != 1:
+            failures.append("HF header must be written once")
     if failures:
         print("self-test FAILED:\n  " + "\n  ".join(failures))
         return 1
     print(f"self-test OK: {len(expected)} columns match (bots and self-replies ignored, median, window, "
-          "first-time vs repeat), header written once")
+          "first-time vs repeat), header written once, HF row")
     return 0
 
 
@@ -235,6 +264,7 @@ def main():
     ap.add_argument("--days", type=int, default=7)
     ap.add_argument("--out", metavar="FILE")
     ap.add_argument("--publish", metavar="BRANCH")
+    ap.add_argument("--hf", metavar="MODEL_ID", help="collect the Hugging Face model row instead")
     ap.add_argument("--self-test", action="store_true")
     args = ap.parse_args()
     if args.self_test:
@@ -244,16 +274,19 @@ def main():
         print("--publish needs GITHUB_TOKEN")
         return 1
     now = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-    row = collect(args.repo, args.days, token, now)
-    line = csv_text(row, header=False).strip()
+    if args.hf:
+        row, csv_path, columns = collect_hf(args.hf, now), HF_CSV_PATH, HF_COLUMNS
+    else:
+        row, csv_path, columns = collect(args.repo, args.days, token, now), CSV_PATH, COLUMNS
+    line = csv_text(row, False, columns).strip()
     if args.out:
-        append_file(args.out, row)
+        append_file(args.out, row, columns)
     if args.publish:
-        publish(args.repo, args.publish, row, token)
+        publish(args.repo, args.publish, row, token, csv_path, columns)
     if os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
-            f.write(f"KPI row ({','.join(COLUMNS)}): `{line}`\n")
-    print(",".join(COLUMNS))
+            f.write(f"KPI row ({','.join(columns)}): `{line}`\n")
+    print(",".join(columns))
     print(line)
     return 0
 

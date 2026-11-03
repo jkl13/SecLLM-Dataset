@@ -10,4 +10,7 @@ contact_links:
   - name: Report a security vulnerability
     url: https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/security/advisories/new
     about: Private report for issues in scripts, workflows, or secrets/personal data in the dataset. Vulnerabilities inside entireCode samples are intentional, not security reports.
-# [TBD: add Discord and HF contact_links when URLs exist]
+  - name: Ask about the Hugging Face model
+    url: https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180/discussions
+    about: Community tab of the model. Include the revision, library versions, hardware, and a minimal reproduction.
+# [TBD: add the Discord contact_link when the invite URL exists]

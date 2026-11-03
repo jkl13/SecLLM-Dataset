@@ -8,11 +8,12 @@ Metrics exist to allocate maintainer time and improve the project, never to rank
 | File | Contents | Updated by |
 |---|---|---|
 | [`github-kpi.csv` on the `metrics` branch](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/blob/metrics/metrics/github-kpi.csv) | One row per week of GitHub KPIs (columns below) | **Automated.** The [`metrics` workflow](../.github/workflows/metrics.yml) runs [`collect_metrics.py`](../scripts/collect_metrics.py) every Monday 00:00 UTC and appends a row through the GitHub Contents API. |
+| [`hf-kpi.csv` on the `metrics` branch](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/blob/metrics/metrics/hf-kpi.csv) | One row per week for the Hugging Face model: `date`, `model`, `revision`, `downloads_30d`, `likes` | **Automated.** Same workflow, `collect_metrics.py --hf`, from the public Hub API. `downloads_30d` is the Hub's rolling 30-day count: report the month's last row, never sum rows. |
 | [`COMMUNITY_KPI.csv`](COMMUNITY_KPI.csv) | One row per month of community KPIs | **Manual**, during the monthly review. Automated columns are copied from `github-kpi.csv`; the rest are counted by hand. |
 | `metrics/reviews/YYYY-MM.md` | Minutes of each monthly review | **Manual**, via pull request after each review. |
 
 `main` only accepts changes through reviewed pull requests, so the weekly rows are kept on the separate `metrics` branch.
-That branch holds only `metrics/github-kpi.csv` and is protected against deletion and force-push, so its commit history is the audit trail.
+That branch holds only the KPI CSVs (`github-kpi.csv`, `hf-kpi.csv`) and is protected against deletion and force-push, so its commit history is the audit trail.
 
 The 2026-09 row of `COMMUNITY_KPI.csv` is the baseline, taken from the first `collect_metrics.py` run (2026-09-27, 7-day window).
 A blank cell means "not measured"; it never means zero.
@@ -62,7 +63,8 @@ Also reviewed monthly (manual, recorded in the minutes, not in the CSV):
 
 - **Multi-channel:** share of questions resolved in the first channel used; time from a chat finding to its issue or Discussion; duplicate items for the same problem across channels; share of model or dataset questions that state the exact revision; share of repeated questions turned into card or FAQ updates; items without a human response for 7 or 14 days, per platform.
 - **Governance:** time to first PR review, distribution of merge approvers, bus factor, contributors promoted to maintainer, time to reach a decision, share of stale permissions removed, policy compliance rate.
-- **Hugging Face** (once the dataset and model repositories are published): downloads, likes, and derived models or datasets.
+- **Hugging Face:** model downloads and likes come from `hf-kpi.csv`; derived models (adapters, merges, quantizations)
+  are counted by hand from the model page. The dataset repository is not published yet.
 
 ## Monthly review (60 minutes, 6 steps)
 

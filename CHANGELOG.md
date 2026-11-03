@@ -32,6 +32,9 @@ Each release lists the SHA-256 of its data files. Verify with `sha256sum data/ja
 - StarCoderData download scripts (`scripts/starcoderdata/`) that fetch the upstream parquet files and extract
   source files for SAST analysis
 - Community data track (`data/community/`) for data produced with third-party tools
+- Links to the published Hugging Face model (`sparrow-co-ltd/qwen35-9b-secfix-grpo-step180`), the project portal, and the K-OSSC projects
+  listing in the README, COMMUNITY.md, the issue chooser, and `CITATION.cff`
+- Weekly Hugging Face model KPIs (`collect_metrics.py --hf`, `metrics/hf-kpi.csv` on the `metrics` branch)
 - Test inputs (`data/test/<lang>.jsonl`): 1,231 records in 7 files (Java 315, Python 149, C 210, C++ 287,
   JavaScript 120, Go 75, TypeScript 75). Same `input` schema as core records; `output` is always `[]`
 - Validator support for `data/test/<lang>.jsonl` (`output` must be `[]`) and matching `--self-test` cases
@@ -49,6 +52,7 @@ Each release lists the SHA-256 of its data files. Verify with `sha256sum data/ja
 
 ### Removed
 
+- `hf/model-card.md` draft. The card published on Hugging Face is the authoritative model description
 - Java (`data/java/input.jsonl`): 2 records (4,617 → 4,615) with the same vulnerability type and flagged line as a test
   record in another version of the same file
 - Java (`data/java/input.jsonl`): 2,291 records (4,615 → 2,324, 101 → 88 vulnerability types) whose finding was labeled

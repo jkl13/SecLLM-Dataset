@@ -8,7 +8,7 @@ license: CC-BY-4.0
 version: 1.0.0
 date-released: 2026-09-20
 repository-code: "https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset"
-url: "https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset"
+url: "https://sparrow-co-ltd.github.io/SecLLM-Dataset-Portal/"
 abstract: >-
   A JSON Lines dataset of security vulnerabilities found by static analysis (SAST)
   in real open-source Java code. Each record includes the full source file, the
@@ -23,3 +23,10 @@ keywords:
   - program repair
   - large language models
   - Java
+references:
+  - type: software
+    title: "qwen35-9b-secfix-grpo-step180"
+    authors:
+      - name: "Sparrow Co., Ltd."
+    url: "https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180"
+    license: Apache-2.0

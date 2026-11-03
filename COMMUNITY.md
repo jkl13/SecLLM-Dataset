@@ -56,8 +56,8 @@ The full matrix, with switch conditions and response targets, is in
 
 Repositories:
 
-[TBD: HF dataset repo ID]
-[TBD: HF model repo ID]
+- Model: [sparrow-co-ltd/qwen35-9b-secfix-grpo-step180](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180) ([Community tab](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180/discussions))
+- Dataset: [TBD: HF dataset repo ID]
 
 Rules for the Community tabs: [docs/community/HUGGINGFACE_COMMUNITY.md](docs/community/HUGGINGFACE_COMMUNITY.md).
 

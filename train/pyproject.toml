@@ -1,0 +1,28 @@
+[project]
+name = "secllm-train"
+version = "0.1.0"
+description = "SFT training pipeline for Qwen3.5-9B security-fix model (LoRA)"
+requires-python = ">=3.12"
+dependencies = [
+    # Versions pinned for the Python 3.12 training environment (managed together with uv.lock)
+    "torch==2.9.1",
+    "transformers==5.15.0",
+    "peft==0.20.0",
+    "datasets==5.0.1",
+    "accelerate==1.14.0",
+    "liger-kernel==0.8.1",
+    "wandb==0.28.1",
+    "matplotlib==3.11.1",  # for the report figure scripts (not needed for training itself)
+]
+
+# torch uses the CUDA 12.8 build (+cu128); uv installs it from the index below.
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu128" }]
+
+[tool.uv]
+package = false

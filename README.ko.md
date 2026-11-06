@@ -4,7 +4,7 @@
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Sparrow-Co-Ltd/SecLLM-Dataset/badge)](https://scorecard.dev/viewer/?uri=github.com/Sparrow-Co-Ltd/SecLLM-Dataset)
-[![Hugging Face model](https://img.shields.io/badge/%F0%9F%A4%97%20Model-qwen35--9b--secfix-yellow)](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180)
+[![Hugging Face model](https://img.shields.io/badge/%F0%9F%A4%97%20Model-qwen35--9b--secfix--lead-yellow)](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged)
 [![Portal](https://img.shields.io/badge/Portal-SecLLM-blue)](https://sparrow-co-ltd.github.io/SecLLM-Dataset-Portal/)
 
 > **보안 취약점 탐지·설명·패치 LLM 학습을 위한 정적분석 기반 데이터셋**
@@ -27,11 +27,13 @@ LLM 학습·평가에 사용할 수 있는 JSON Lines 형식으로 정리한 데
 
 ## 모델, 포털, 소개처
 
-- **모델:** Hugging Face의 [sparrow-co-ltd/qwen35-9b-secfix-grpo-step180](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180)는 SecLLM 프로젝트의 모델입니다.
-  `Qwen/Qwen3.5-9B`용 LoRA 어댑터이며 라이선스는 Apache-2.0입니다. 확인된 SAST 탐지 결과와 소스 파일을 받아
-  `edit_src_code` 도구 호출로 취약한 라인을 수정합니다. C, C++, Java, Python, JavaScript, Go, TypeScript를
-  다룹니다. 취약점을 탐지하지는 않으며, 생성한 패치는 병합 전에 검토해야 합니다.
-  서빙 방법과 한계는 모델 카드가 기준입니다.
+- **모델:** Hugging Face의 [sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged)는 SecLLM 프로젝트의 현재 모델입니다.
+  `Qwen/Qwen3.5-9B`를 교사 에이전트 궤적으로 LoRA SFT한 뒤 GRPO로 학습하고, 두 단계를 전체 가중치로 병합했습니다.
+  라이선스는 Apache-2.0입니다. 확인된 SAST 탐지 결과 하나를 받아 `read_code`로 소스 파일을 읽고, `edit_code`로
+  수정한 뒤 `submit_fix`로 제출합니다. C, C++, Java, Python, JavaScript, Go, TypeScript를 다룹니다.
+  취약점을 탐지하지는 않으며, 생성한 패치는 병합 전에 검토해야 합니다. 서빙 방법과 한계는 모델 카드가 기준입니다.
+- **이전 모델:** [sparrow-co-ltd/qwen35-9b-secfix-grpo-step180](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180)는 GRPO 180스텝의 LoRA 어댑터로, `edit_src_code` 도구 하나를 쓰고
+  소스 파일을 프롬프트로 받습니다.
 - **프로젝트 포털:** <https://sparrow-co-ltd.github.io/SecLLM-Dataset-Portal/> (한국어·영어 소개)
 - **소개처:** 한국오픈소스보안커뮤니티(K-OSSC) 회원·회원사 프로젝트 목록인 [K-OSSC projects](https://github.com/k-ossc/kossc-projects)에
   2026년 9월부터 등재되어 있습니다.
@@ -404,7 +406,7 @@ uv run scripts/starcoderdata/download_starcoderdata.py --language java --max-row
 - 데이터 오류(잘못된 라벨, 오탐, 잘못된 추적 경로, 잘못된 패치): [데이터 오류 신고 양식](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/issues/new?template=data-error.yml)
 - 보안 취약점: [SECURITY.md](SECURITY.md)의 절차를 따라 주세요 (공개 이슈로 올리지 마세요)
 - 권리자의 삭제 요청: [삭제 요청 양식](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/issues/new?template=removal-request.yml)
-- 모델 관련 질문: [모델의 Community 탭](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180/discussions), [COMMUNITY.md의 Hugging Face 섹션](COMMUNITY.md#hugging-face) 참고
+- 모델 관련 질문: [모델의 Community 탭](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged/discussions), [COMMUNITY.md의 Hugging Face 섹션](COMMUNITY.md#hugging-face) 참고
 - 첫 응대는 영업일 기준 2일 이내입니다 (월~금, 한국 표준시). 답변은 최선을 다해 제공하며, 보장된 지원 계약은 아닙니다.
 
 > GitHub은 데이터·버그·의사결정의 공식 기록소이며, Hugging Face Community 탭은 특정 Hugging Face 리비전에 대한 질문을 다루고, Discord는 채팅 전용으로 의사결정을 하지 않으며, 취약점과 개인정보는 어떤 채널에도 공개적으로 게시되지 않습니다.

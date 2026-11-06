@@ -34,6 +34,8 @@ Each release lists the SHA-256 of its data files. Verify with `sha256sum data/ja
 - Community data track (`data/community/`) for data produced with third-party tools
 - Links to the published Hugging Face model (`sparrow-co-ltd/qwen35-9b-secfix-grpo-step180`), the project portal, and the K-OSSC projects
   listing in the README, COMMUNITY.md, the issue chooser, and `CITATION.cff`
+- The current model, `sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged` (SFT then GRPO, merged full weights), in the README, COMMUNITY.md,
+  the issue chooser, `CITATION.cff`, and the weekly HF KPIs; the step-180 adapter stays listed as the earlier model
 - Weekly Hugging Face model KPIs (`collect_metrics.py --hf`, `metrics/hf-kpi.csv` on the `metrics` branch)
 - Test inputs (`data/test/<lang>.jsonl`): 1,231 records in 7 files (Java 315, Python 149, C 210, C++ 287,
   JavaScript 120, Go 75, TypeScript 75). Same `input` schema as core records; `output` is always `[]`

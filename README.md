@@ -4,7 +4,7 @@ English | [한국어](README.ko.md)
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Sparrow-Co-Ltd/SecLLM-Dataset/badge)](https://scorecard.dev/viewer/?uri=github.com/Sparrow-Co-Ltd/SecLLM-Dataset)
-[![Hugging Face model](https://img.shields.io/badge/%F0%9F%A4%97%20Model-qwen35--9b--secfix-yellow)](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180)
+[![Hugging Face model](https://img.shields.io/badge/%F0%9F%A4%97%20Model-qwen35--9b--secfix--lead-yellow)](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged)
 [![Portal](https://img.shields.io/badge/Portal-SecLLM-blue)](https://sparrow-co-ltd.github.io/SecLLM-Dataset-Portal/)
 
 > **A static-analysis-based dataset for training LLMs to detect, explain, and patch security vulnerabilities**
@@ -27,11 +27,14 @@ For motivation, collection process, limitations, and responsible use, see the [d
 
 ## Model, portal, and listings
 
-- **Model:** [sparrow-co-ltd/qwen35-9b-secfix-grpo-step180](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180) on Hugging Face, the SecLLM project's model.
-  It is a LoRA adapter for `Qwen/Qwen3.5-9B` under Apache-2.0. Given a confirmed SAST finding and its source file,
-  it patches the vulnerable lines through `edit_src_code` tool calls. It covers C, C++, Java, Python, JavaScript, Go,
-  and TypeScript. It does not detect vulnerabilities, and its patches need review before merging.
+- **Model:** [sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged) on Hugging Face, the SecLLM project's current model.
+  `Qwen/Qwen3.5-9B` was trained with LoRA SFT on teacher agent trajectories, then with GRPO, and both stages are
+  merged into full weights under Apache-2.0. Given one confirmed SAST finding, the agent reads the source file with
+  `read_code`, patches it with `edit_code`, and submits the fix with `submit_fix`. It covers C, C++, Java, Python,
+  JavaScript, Go, and TypeScript. It does not detect vulnerabilities, and its patches need review before merging.
   The model card is the authoritative description, including how to serve it and its limitations.
+- **Earlier model:** [sparrow-co-ltd/qwen35-9b-secfix-grpo-step180](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180), a LoRA adapter (GRPO step 180) that uses a single
+  `edit_src_code` tool and gets the source file in the prompt
 - **Project portal:** <https://sparrow-co-ltd.github.io/SecLLM-Dataset-Portal/> (Korean and English overview)
 - **Listed in:** [K-OSSC projects](https://github.com/k-ossc/kossc-projects), the curated list of open source projects by K-OSSC members and member companies
   (Korea Open Source Security Community, 한국오픈소스보안커뮤니티), since 2026-09
@@ -406,7 +409,7 @@ See [COMMUNITY.md](COMMUNITY.md) for the full guide to every channel.
 - Data errors (wrong label, false positive, wrong trace, bad patch): [data error form](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/issues/new?template=data-error.yml)
 - Security vulnerabilities: follow [SECURITY.md](SECURITY.md) (do not open a public issue)
 - Removal requests from rights holders: [removal request form](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/issues/new?template=removal-request.yml)
-- Model questions: the [Community tab of the model](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180/discussions); see [Hugging Face in COMMUNITY.md](COMMUNITY.md#hugging-face)
+- Model questions: the [Community tab of the model](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged/discussions); see [Hugging Face in COMMUNITY.md](COMMUNITY.md#hugging-face)
 - First triage within 2 business days (Monday-Friday, KST). Answers are best effort, not a support contract.
 
 > GitHub is the source of record for data, bugs, and decisions; the Hugging Face Community tab covers questions about a specific Hugging Face revision; Discord is for chat only and never makes decisions; vulnerabilities and personal data are never posted publicly on any of them.

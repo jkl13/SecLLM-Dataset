@@ -56,7 +56,8 @@ The full matrix, with switch conditions and response targets, is in
 
 Repositories:
 
-- Model: [sparrow-co-ltd/qwen35-9b-secfix-grpo-step180](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180) ([Community tab](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180/discussions))
+- Model (current): [sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged) ([Community tab](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged/discussions))
+- Model (earlier LoRA adapter): [sparrow-co-ltd/qwen35-9b-secfix-grpo-step180](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180) ([Community tab](https://huggingface.co/sparrow-co-ltd/qwen35-9b-secfix-grpo-step180/discussions))
 - Dataset: [TBD: HF dataset repo ID]
 
 Rules for the Community tabs: [docs/community/HUGGINGFACE_COMMUNITY.md](docs/community/HUGGINGFACE_COMMUNITY.md).

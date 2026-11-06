@@ -8,7 +8,7 @@ Metrics exist to allocate maintainer time and improve the project, never to rank
 | File | Contents | Updated by |
 |---|---|---|
 | [`github-kpi.csv` on the `metrics` branch](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/blob/metrics/metrics/github-kpi.csv) | One row per week of GitHub KPIs (columns below) | **Automated.** The [`metrics` workflow](../.github/workflows/metrics.yml) runs [`collect_metrics.py`](../scripts/collect_metrics.py) every Monday 00:00 UTC and appends a row through the GitHub Contents API. |
-| [`hf-kpi.csv` on the `metrics` branch](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/blob/metrics/metrics/hf-kpi.csv) | One row per week for the Hugging Face model: `date`, `model`, `revision`, `downloads_30d`, `likes` | **Automated.** Same workflow, `collect_metrics.py --hf`, from the public Hub API. `downloads_30d` is the Hub's rolling 30-day count: report the month's last row, never sum rows. |
+| [`hf-kpi.csv` on the `metrics` branch](https://github.com/Sparrow-Co-Ltd/SecLLM-Dataset/blob/metrics/metrics/hf-kpi.csv) | One row per week for each Hugging Face model (current and earlier): `date`, `model`, `revision`, `downloads_30d`, `likes` | **Automated.** Same workflow, `collect_metrics.py --hf`, from the public Hub API. `downloads_30d` is the Hub's rolling 30-day count: report the month's last row, never sum rows. |
 | [`COMMUNITY_KPI.csv`](COMMUNITY_KPI.csv) | One row per month of community KPIs | **Manual**, during the monthly review. Automated columns are copied from `github-kpi.csv`; the rest are counted by hand. |
 | `metrics/reviews/YYYY-MM.md` | Minutes of each monthly review | **Manual**, via pull request after each review. |
 

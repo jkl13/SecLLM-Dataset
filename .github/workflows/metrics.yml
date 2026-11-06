@@ -12,7 +12,8 @@ permissions:
   contents: read
 
 env:
-  HF_MODEL: sparrow-co-ltd/qwen35-9b-secfix-grpo-step180
+  # ponytail: space-separated list; one CSV row per model per week.
+  HF_MODELS: sparrow-co-ltd/qwen35-9b-secfix-grpo-lead-step300-merged sparrow-co-ltd/qwen35-9b-secfix-grpo-step180
 
 # No top-level concurrency: a shared group would let a PR `test` run displace a queued publish.
 
@@ -35,7 +36,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - if: github.event_name == 'pull_request'
-        run: python3 scripts/collect_metrics.py --hf "$HF_MODEL"
+        run: for m in $HF_MODELS; do python3 scripts/collect_metrics.py --hf "$m"; done
 
   publish:
     needs: test
@@ -72,6 +73,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - run: python3 scripts/collect_metrics.py --hf "$HF_MODEL" --publish metrics
+      - run: for m in $HF_MODELS; do python3 scripts/collect_metrics.py --hf "$m" --publish metrics; done
         env:
           GITHUB_TOKEN: ${{ github.token }}

@@ -305,8 +305,11 @@ def main() -> None:
         if wandb.run is not None:
             wandb.run.summary["peak_gpu_gib"] = round(peak, 1)
             wandb.run.summary["adapter_dir"] = str(adapter_dir)
-    except ImportError:
-        pass
+    except ImportError as exc:
+        print(
+            f"warning: wandb is not installed; skipped writing the run summary ({exc})",
+            file=sys.stderr,
+        )
     print(f"Adapter saved: {adapter_dir}")
 
     # Copy the training log to the final archive (outputs/ is a cleanup target)
